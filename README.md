@@ -96,9 +96,11 @@ After all the process above, revserse perspective and output the stacked image
 
 ## Challenge Discussion
 1. Hard-coded tuning
+
     The `src` and `dst` in the perspective transform is hard-coded without detecting the feasibility to the input clip. For my program to work, one must tune these hyperparameters according to the input clip before running the whole program. To overcome this challenge, another program like format transformer might automate the tuning part and solve this issue.
 
 2. Objects covering lanes
+
     Using purely computer vision tools is impossible to detect objects that might cover the lanes. In the current process, they will be treated as the lane itself and wrong features will be reported. This can be solve using object detection to filter out their presence.
 
 
