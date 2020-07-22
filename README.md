@@ -1,129 +1,104 @@
 # Advanced Lane Tracking
 
+[TOC]
+
+## Udacity Writeup Question Pointers
+- Camera Calibration -> Detail Discussion/Camera Calibration
+- Pipeline(test images)
+    - 1 -> Detail Discussion/Feature Extraction Pipeline/Undestortion process
+    - 2 -> Detail Discussion/Feature Extraction Pipeline/Feature Extraction
+    - 3 -> Detail Discussion/Perspective Transform
+    - 4 -> Detail Discussion/Curve Fitting
+    - 5 -> Detail Discussion/Sanity Check
+    - 6 -> Detail Discussion/Output
+- Pipeline(video) -> Introduction
+- Discussion -> Challenge Discussion
+
 The goal  of this project is to identify lanes from a front camera of a car and highlight the region that is safe for the car to drive. 
 ## Introduction
-img1 here
-1. Compute the camera calibration matrix and distortion coefficients from a given set of chessboard images taken from the same camera used to create the short clip. The calibration result is stored in a pickle file for read/load.
-2. Every frame in the video is transformed through a desinated pipeline that extract different features from the original frame.
-3. Extract lane information using perspective transform and perform sanity check on them. If lanes are valid, they will be recorded and used as future reference for faster lane extraction. If lanes are not valid, they will be marked as bad frame and use the previous average lane information as valid lane instead.
-
-## Steps
-img2 here
-### Camera Calibration
-* Apply a distortion correction to raw images.
-* Use color transforms, gradients, etc., to create a thresholded binary image.
-* Apply a perspective transform to rectify binary image ("birds-eye view").
-* Detect lane pixels and fit to find the lane boundary.
-* Determine the curvature of the lane and vehicle position with respect to center.
-* Warp the detected lane boundaries back onto the original image.
-* Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
-
-[//]: # (Image References)
-
-[image1]: ./examples/undistort_output.png "Undistorted"
-[image2]: ./test_images/test1.jpg "Road Transformed"
-[image3]: ./examples/binary_combo_example.jpg "Binary Example"
-[image4]: ./examples/warped_straight_lines.jpg "Warp Example"
-[image5]: ./examples/color_fit_lines.jpg "Fit Visual"
-[image6]: ./examples/example_output.jpg "Output"
-[video1]: ./project_video.mp4 "Video"
-
-## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
-
-### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
-
----
-
-### Writeup / README
-
-#### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  [Here](https://github.com/udacity/CarND-Advanced-Lane-Lines/blob/master/writeup_template.md) is a template writeup for this project you can use as a guide and a starting point.  
-
-You're reading it!
-
-### Camera Calibration
-
-#### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
-
-The code for this step is contained in the first code cell of the IPython notebook located in "./examples/example.ipynb" (or in lines # through # of the file called `some_file.py`).  
-
-I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.  
-
-I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result: 
-
-![alt text][image1]
-
-### Pipeline (single images)
-
-#### 1. Provide an example of a distortion-corrected image.
-
-To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
-![alt text][image2]
-
-#### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
-
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
-
-![alt text][image3]
-
-#### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
-
-The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
-
-```python
-src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
-dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
-```
-
-This resulted in the following source and destination points:
-
-| Source        | Destination   | 
-|:-------------:|:-------------:| 
-| 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
-| 695, 460      | 960, 0        |
-
-I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
-
-![alt text][image4]
-
-#### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
-
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
-
-![alt text][image5]
-
-#### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
-
-I did this in lines # through # in my code in `my_other_file.py`
-
-#### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
-
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
-
-![alt text][image6]
-
----
-
-### Pipeline (video)
-
-#### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
 Here's a [link to my video result](./project_video.mp4)
 
----
+1. Perform camera calibration from a given set of chessboard images taken from the same camera used to record the short clip. The calibration result is stored in a pickle file for read/load for undistortion.
+2. Every frame in the video is transformed through a desinated pipeline that extract different features from the original frame.
+3. Extract lane information using perspective transform and perform sanity check on them. 
+    1. If lanes are valid, they will be recorded and used as future reference for faster lane extraction. 
+    2. If lanes are not valid, they will be marked as bad frame and use the previous average lane information as valid lanes instead.
+![extraction pipeline](https://i.imgur.com/MTTQVeh.png)
 
-### Discussion
+## Detail Steps
 
-#### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
+### Camera Calibration
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+- `objp`: a 3D coordinate array indicating where the chessboard corners should be. In this project, the chessboard is a 2D plane so all the z coordinates are set to 0. 
+- `objpoints`: an array of coordinates copy from successfully detected chessboard corners in test image.
+- `imgpoints`: an array of 2D pixel position of each of the corner detected on the successfully detected image.
+- `mtx`, `dist`: the calibration and distortion coefficients generated from `cv2.calibrateCamera()`, which uses opjpoints and imgpoints for distortion calibration.
+- `dist_pickle`: a global dictionary that stores `mtx`and `dist`. It will be dump to a pickle file as cam_cal.p for future usage.
+
+Result from undistort:
+![](https://i.imgur.com/a9fgoDp.jpg)
+
+### Feature Extraction Pipeline
+![tranformation pipeline](https://i.imgur.com/YsGdD0R.png)
+
+1. Undestortion process
+
+    All the in put image are raw image from camera, so they must receive undistort before furhter processing.
+![](https://i.imgur.com/ZAL82E2.jpg)
+
+2. Material Preparation
+- `gray`: a grayscale image for gradient filtering
+- `hls`: a HLS colored image for saturation filtering
+3. Feature Extraction
+    There are 3 methods in the extraction process, each method will output a binary map indicating the activated pixels.
+    1. gradient fitlering on x axis
+    2. gradient filtering on direction(dy/dx)
+    3. saturation fitlering 
+    Afterwards, the 3 binary maps are stacked together to form 2 clear lanes on it.
+
+![](https://i.imgur.com/TcIk4lP.jpg)
+
+### Perspective Transform
+To perform perspective transform, 2 arguments are requried:
+1. `src`: a hard-coded pixel locations that forms a quadrilateral, which covered both lane from close to far.
+2. `dst`: a hard-coded pixel locations that forms a rectangle, which will be the transformed area.
+
+Note: The pixel locations are picked according to the given clip and may need to adjust for different video.
+
+The output file is varified by checking manually whether the lanes are parallel and the trasform matrix `M` and reverse matrix `Minv` are collected for futhre usage.
+
+![](https://i.imgur.com/7ttzOb0.jpg)
+
+### Curve Fitting
+The fitting process has 2 different approaches, one is to find the fitting curve form scratch and the other one is to find the fitting curve using previous information.
+1. Curve fitting from scratch:
+    Given that all lanes near car will be fairly vertical to camera, in `find_lane_pixels()`, I used a histogram to collect the activated pixels in the bottom one-nineth part and use the most stacked locations as the staring points in . I then create 9 windows with one-nineth of the whole picture in height and 100 pixel in width to capture all activated pixcel iteratively. If the amount of the pixcels exceeded 50, I recenter the window to the average location of the activated pixels in current window. Finally, bt collecting all the activated pixels with 9 windows, they can be used to fit to a quadratic equation.
+
+![](https://i.imgur.com/wkw5ARH.jpg)
+
+2. Curve fitting with previous information:
+    Given that all lane are continual, in `fit_poly_with_prev()`, I use the previous stored coefficients to create the center points for each y value and use these conter points to create windows  similar to the first part. The collected pixels will be fitted to a new quadratic equation.
+
+### Sanity Check
+For every fitted lane, `sanity_check()` can tell if the lane are badly or well detected. For those who failed the check, it is abandoned and the previous lane status will be used to generate the current lane indication. If the check failed continually for 15 times, the lanes will be fetched from scratch again.
+
+The sainity check contained 3 parts:
+1. curvature test
+2. distance test
+3. parallel test
+
+### Output
+After all the process above, revserse perspective and output the stacked image
+
+![](https://i.imgur.com/3nmHL8R.jpg)
+
+
+## Challenge Discussion
+1. Hard-coded tuning
+    The `src` and `dst` in the perspective transform is hard-coded without detecting the feasibility to the input clip. For my program to work, one must tune these hyperparameters according to the input clip before running the whole program. To overcome this challenge, another program like format transformer might automate the tuning part and solve this issue.
+
+2. Objects covering lanes
+    Using purely computer vision tools is impossible to detect objects that might cover the lanes. In the current process, they will be treated as the lane itself and wrong features will be reported. This can be solve using object detection to filter out their presence.
+
 
