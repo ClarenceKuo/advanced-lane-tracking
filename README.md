@@ -1,7 +1,5 @@
 # Advanced Lane Tracking
 
-[TOC]
-
 ## Udacity Writeup Question Pointers
 - Camera Calibration -> Detail Discussion/Camera Calibration
 - Pipeline(test images)
@@ -14,10 +12,12 @@
 - Pipeline(video) -> Introduction
 - Discussion -> Challenge Discussion
 
-The goal  of this project is to identify lanes from a front camera of a car and highlight the region that is safe for the car to drive. 
-## Introduction
+ 
 
-Here's a [link to my video result](./project_video.mp4)
+## Introduction
+The goal  of this project is to identify lanes from a front camera of a car and highlight the region that is safe for the car to drive.
+
+Here's a [link](https://youtu.be/DRTsc3jyWg0) to my video result.
 
 1. Perform camera calibration from a given set of chessboard images taken from the same camera used to record the short clip. The calibration result is stored in a pickle file for read/load for undistortion.
 2. Every frame in the video is transformed through a desinated pipeline that extract different features from the original frame.
