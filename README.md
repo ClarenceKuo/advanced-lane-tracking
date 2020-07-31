@@ -1,19 +1,5 @@
 # Advanced Lane Tracking
 
-## Udacity Writeup Question Pointers
-- Camera Calibration -> Detail Discussion/Camera Calibration
-- Pipeline(test images)
-    - 1 -> Detail Discussion/Feature Extraction Pipeline/Undestortion process
-    - 2 -> Detail Discussion/Feature Extraction Pipeline/Feature Extraction
-    - 3 -> Detail Discussion/Perspective Transform
-    - 4 -> Detail Discussion/Curve Fitting
-    - 5 -> Detail Discussion/Sanity Check
-    - 6 -> Detail Discussion/Output
-- Pipeline(video) -> Introduction
-- Discussion -> Challenge Discussion
-
- 
-
 ## Introduction
 The goal  of this project is to identify lanes from a front camera of a car and highlight the region that is safe for the car to drive.
 
