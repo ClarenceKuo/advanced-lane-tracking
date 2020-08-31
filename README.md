@@ -1,4 +1,4 @@
-# Advanced Lane Tracking
+# Lane Tracking with OpenCV
 Here's a [link](https://youtu.be/FgJes7PgdPI) to my video result.
 
 ## Introduction
